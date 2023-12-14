@@ -1,0 +1,125 @@
+<div class="container mb-4">
+    <div class="row d-flex justify-content-center">
+      <h3 class="col-auto">search </h3>
+    </div>
+    <div class="row">
+      <mat-form-field class="col-12 col-lg-10 mx-1" appearance="fill">
+        <mat-label>nom bloc</mat-label>
+        <input matInput [formControl]="BlocSearchTerms" />
+        <mat-icon matPrefix>business</mat-icon>
+      </mat-form-field>
+  
+  
+  
+      <button (click)="performSearch()" class="col-12 col-lg-1 search-button mx-lg-1" mat-raised-button color="primary">
+        <mat-icon matPrefix>search</mat-icon>
+        Search
+      </button>
+   
+  
+   
+  
+    <mat-menu #capacite="matMenu">
+      <button (click)="setCapacite([0,100]);performSearch()" mat-menu-item>capacite faible: 0-100</button>
+      <button (click)="setCapacite([100,200]);performSearch()" mat-menu-item>capacite moyenne: 100-200</button>
+      <button (click)="setCapacite([200,1000]);performSearch()" mat-menu-item>capacite eleveé: 200+</button>
+    </mat-menu>
+  </div>
+  
+  <button class="option-button" mat-button [matMenuTriggerFor]="capacite">
+    capacite bloc<mat-icon>expand_more</mat-icon>
+  </button>
+  
+  
+    <mat-divider></mat-divider>
+  
+  
+  <div class="col-12"  >
+      <mat-card class="cardWithShadow">
+        <mat-card-content class="p-24">
+          <mat-card-title>liste des blocs</mat-card-title>
+          <div class="table-responsive m-t-16">
+            <table mat-table [dataSource]="dataSource" matSort class="w-100">
+
+                 <!-- id bloc Column -->
+              <ng-container matColumnDef="idBloc">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  class="f-w-600 mat-subtitle-1 f-s-14"
+                >
+  
+                
+                identidiant bloc
+                </th>
+                <td mat-cell *matCellDef="let element" class="mat-body-1">
+                  {{ element.idBloc }}
+                </td>
+              </ng-container>
+             
+              <!-- nom bloc Column -->
+              <ng-container matColumnDef="nom du bloc">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  class="f-w-600 mat-subtitle-1 f-s-14"
+                >
+  
+                <!--     'nom du bloc', 'capacite du bloc','Actions'    -->
+                nom du bloc
+                </th>
+                <td mat-cell *matCellDef="let element" class="mat-body-1">
+                  {{ element.nomBloc }}
+                </td>
+              </ng-container>
+  
+              <!-- capacite Column -->
+              <ng-container matColumnDef="capacite du bloc">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  class="f-w-600 mat-subtitle-1 f-s-14"
+                >
+                capacite du bloc
+                </th>
+                <td mat-cell *matCellDef="let element" class="mat-body-1">
+                  {{ element.capaciteBloc }}
+                </td>
+              </ng-container>
+  
+             
+  
+                <!-- actions Column -->
+                <ng-container matColumnDef="Actions">
+                  <th   mat-header-cell
+                  *matHeaderCellDef
+                  class="f-w-600 mat-subtitle-1 f-s-14" > Actions</th>
+                  <td  mat-cell *matCellDef="let element" class="mat-body-1">
+                    
+                   
+  
+                    <button class="mx-2" (click)="updateBloc(element.idBloc)" mat-fab color="primary">
+                      <mat-icon>update</mat-icon>
+                    </button>
+      
+      
+                    <button (click)="deleteBloc( element.idBloc)" mat-fab color="warn">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                    
+                  </td>
+                </ng-container>
+              
+           
+  
+              
+  
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  
+  

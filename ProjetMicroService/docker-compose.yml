@@ -1,0 +1,123 @@
+version: "3.9"
+services:
+  Universite:
+    container_name: universitecont
+    image: universiteimg
+    build: ./UniversiteMicroService
+    ports:
+      - 8072:8072
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://serviceregistry:8761/eureka/
+    depends_on:
+      - Eureka
+  Chambre:
+    container_name: chambrecont
+    image: chambreimg
+    build: ./chambre
+    ports:
+      - 8070:8070
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://serviceregistry:8761/eureka/
+    depends_on:
+      - Eureka
+  Foyer:
+    container_name: foyercont
+    image: foyerimg
+    build: ./Foyerr
+    ports:
+      - 8071:8071
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://serviceregistry:8761/eureka/
+    depends_on:
+      - Eureka
+  Bloc:
+    container_name: bloccont
+    image: blocimg
+    build: ./BlocMS
+    ports:
+      - 8073:8073
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://serviceregistry:8761/eureka/
+      - MYSQL_HOST=mysqlcont
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_PORT=3306
+    depends_on:
+      - Eureka
+      - db-mysql
+  Reservation:
+    container_name: reservationcont
+    image: reservationimg
+    build: ./Reservation
+    ports:
+      - 8074:8074
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://serviceregistry:8761/eureka/
+    depends_on:
+      - Eureka
+  User:
+    container_name: usercont
+    image: userimg
+    build: ./myapp-back
+    ports:
+      - 3001:3001
+    environment:
+      - MONGODB_URI=mongodb://mongodbcont:27017/MS-User
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://serviceregistry:8761/eureka/
+      - eureka.instance.preferIpAddress=true
+    depends_on:
+      - mongodb
+      - Eureka
+  Eureka:
+    container_name: Eureka
+    build: ./EurekaDiscovery
+    hostname: serviceregistry
+    ports:
+      - 8761:8761
+    image: eurekaexpo
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://serviceregistry:8761/eureka/
+  api-gateway:
+    container_name: apigatewaycont
+    build: ./apigatewaymss
+    ports:
+      - "8090:8090"
+    image: "apigatewayimg"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://serviceregistry:8761/eureka/
+    depends_on:
+      - Eureka
+      - Foyer
+      - Universite
+      - Chambre
+      - Bloc
+      - Reservation
+  frontend:
+    image: frontimg
+    container_name: frontcont
+    build: 
+      context: ./Main
+      dockerfile: dockerfile
+    ports:
+      - "4200:4200"
+    depends_on:
+      - api-gateway
+  db-mysql:
+    image: mysql
+    container_name: mysqlcont
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: blocdb
+    ports:
+      - 3307:3306
+    restart: unless-stopped
+  mongodb:
+    container_name: mongodbcont
+    image: mongo
+    ports:
+      - "27017:27017"
+    restart: unless-stopped
+
+  
+
+    

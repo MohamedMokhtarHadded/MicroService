@@ -1,0 +1,4 @@
+FROM openjdk:17
+EXPOSE 8070
+ADD target/chambre-0.0.1-SNAPSHOT.jar chambreDock.jar
+ENTRYPOINT ["java","-jar","chambreDock.jar"]
